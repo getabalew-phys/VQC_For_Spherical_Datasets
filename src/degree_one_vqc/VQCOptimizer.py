@@ -43,11 +43,12 @@ class Trainer:
         """Binary cross-entropy on rescaled VQC output.
 
         The PauliZ expectation value in [-1, +1] is mapped to [0, 1]
-        via (raw + 1) / 2, then standard BCE is applied.
+        via (1 - raw) / 2, then standard BCE is applied.
         """
         raw = np.array([self.model.forward(x, weights) for x in X])
-        probs = (raw + 1.0) / 2.0
+        probs = (1.0 - raw) / 2.0
         probs = np.clip(probs, 1e-7, 1.0 - 1e-7)
+
         return -np.mean(
             Y * np.log(probs) + (1.0 - Y) * np.log(1.0 - probs)
         )
@@ -83,7 +84,14 @@ class Trainer:
         dict  {weights, train_history, val_history}
         """
         weight_shape = self.model.ansatz.get_weight_shape(self.model.n_qubits)
-        weights = np.random.random(weight_shape, requires_grad=True)
+        np.random.seed(42)
+
+        weights = np.random.uniform(
+            low=-np.pi,
+            high=np.pi,
+            size=weight_shape,
+            requires_grad=True,
+        )
 
         train_history = []
         val_history = []

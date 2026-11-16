@@ -82,6 +82,7 @@ class VQCModel:
         The circuit consists of an embedding layer that encodes the input features into quantum states,
         followed by a variational ansatz that applies parameterized quantum gates to the qubits.
         Finally, we measure the qubits according to the specified measurement type."""
+
         wires = range(self.n_qubits)
         self.embedding.apply(features, wires)
         self.ansatz.apply(weights, wires)
@@ -90,14 +91,18 @@ class VQCModel:
     def _measure(self, wires):
         if self.measurement == "expval":
             return qml.expval(qml.PauliZ(wires[0]))
+        
         elif self.measurement == "probs":
             return qml.probs(wires=wires)
+        
         elif self.measurement == "expval_all":
             return [qml.expval(qml.PauliZ(w)) for w in wires]
 
     def forward(self, x, weights):
         """Run one input sample through the circuit and return the result."""
         w = self._apply_dropout(weights)
+        
+        # The above returns a masked version of the weights, where some of the weights are set to zero based on the dropout rate.
         return self._qnode(x, w)
 
     def train(self):

@@ -47,19 +47,6 @@ def make_sphere_moons(n_samples=300, noise_std=0.08, seed=42):
     return theta, phi, labels
 
 
-def water_earth_dataset():
-    """
-    
-    Fetches the water-earth classification dataset from Google Earth Engine.
-    The dataset is a binary classification of water vs. land on the Earth's surface."""
-
-    # Remember that you need to authenticate with Google Earth Engine before running this function
-
-    ee.Initialize()
-    dataset = ee.ImageCollection("JRC/GSW1_4/YearlyHistory")
-    return dataset.size().getInfo()
-
-
 def sphere_to_cartesian(theta, phi):
     """Convert spherical (theta, phi) to Cartesian (x, y, z) on the unit sphere."""
     x = np.sin(theta) * np.cos(phi)
@@ -67,6 +54,3 @@ def sphere_to_cartesian(theta, phi):
     z = np.cos(theta)
     return np.column_stack([x, y, z])
 
-
-data = water_earth_dataset()
-print(data)

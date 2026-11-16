@@ -1,5 +1,9 @@
 # Ignoring the enviroment file
 .venv/
-src/vqc_spherical/__pycache__/
+src/degree_one_vqc/__pycache__/
 tests/
+.chart-data-*/
+output/
+tmp/
+src/vqc_spherical.egg-info/
 # Ignoring the 
